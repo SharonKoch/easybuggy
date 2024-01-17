@@ -22,8 +22,6 @@
  import org.apache.commons.lang.StringUtils;
  import org.t246osslab.easybuggy.core.servlets.AbstractServlet;
  import org.t246osslab.easybuggy.core.utils.MultiPartFileUtils;
-@@ -22,0 +22,1 @@
-+import java.nio.file.FileSystems;
  
  @SuppressWarnings("serial")
  @WebServlet(urlPatterns = { "/ursupload" })
@@ -125,28 +123,16 @@
                      pixelBuffer[0] = ~pixelBuffer[0];
                      pixelBuffer[1] = ~pixelBuffer[1];
                      pixelBuffer[2] = ~pixelBuffer[2];
-@@ -123,0 +124,1 @@
-+
                      raster.setPixel(x, y, pixelBuffer);
                  }
              }
              // Output the image
-@@ -127,1 +129,6 @@
--            ImageIO.write(image, "png", new File(fileName));
-+            Path normalizedPath = FileSystems.getDefault().getPath(savePath, fileName).normalize();
-+            if (!normalizedPath.startsWith(savePath)) {
-+                IOException ioException = new IOException("Invalid file name.");
-+                throw new UncheckedIOException(ioException);
-+            }
-+            ImageIO.write(image, "png", normalizedPath.toFile());
+             ImageIO.write(image, "png", new File(fileName));
              isConverted = true;
          } catch (Exception e) {
              // Log and ignore the exception
              log.warn("Exception occurs: ", e);
          }
-@@ -133,0 +140,2 @@
-+
-+
          return isConverted;
      }
  }
