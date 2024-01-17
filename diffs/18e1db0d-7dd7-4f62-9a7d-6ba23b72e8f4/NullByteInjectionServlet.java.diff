@@ -50,22 +50,22 @@
              // Get absolute path of the web application
              String appPath = getServletContext().getRealPath("");
  
-@@ -46,2 +48,4 @@
+@@ -46,2 +48,8 @@
 -            File file = new File(appPath + File.separator + "pdf" + File.separator + fileName);
 -            if (!file.exists()) {
 +            Path path = null;
 +            try {
 +                path = Paths.get(appPath, "pdf", fileName);
 +            } catch (InvalidPathException e) {
++                responseToClient(req, res, getMsg("msg.invalid.path.exception.occur", locale), "");
++                return;
++            }
++            if (!Files.exists(path)) {
                  responseToClient(req, res, getMsg("title.nullbyteinjection.page", locale), bodyHtml.toString());
                  return;
              }
-@@ -51,1 +55,5 @@
+@@ -51,1 +59,1 @@
 -            log.debug("File location on server::" + file.getAbsolutePath());
-+            if (!Files.exists(path)) {
-+                responseToClient(req, res, getMsg("title.nullbyteinjection.page", locale), bodyHtml.toString());
-+                return;
-+            }
 +            log.debug("File location on server::" + path.toAbsolutePath().toString());
              ServletContext ctx = getServletContext();
 @@ -53,0 +61,2 @@
