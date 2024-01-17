@@ -133,12 +133,12 @@
              // Output the image
 @@ -127,1 +129,6 @@
 -            ImageIO.write(image, "png", new File(fileName));
-+            Path normalizedPath = FileSystems.getDefault().getPath(fileName).normalize();
-+            if (!normalizedPath.startsWith(fileName)) {
++            Path normalizedPath = FileSystems.getDefault().getPath(savePath, fileName).normalize();
++            if (!normalizedPath.startsWith(savePath)) {
 +                IOException ioException = new IOException("Invalid file name.");
 +                throw new UncheckedIOException(ioException);
 +            }
-+            ImageIO.write(image, "png", new File(normalizedPath.toAbsolutePath().toString()));
++            ImageIO.write(image, "png", normalizedPath.toFile());
              isConverted = true;
          } catch (Exception e) {
              // Log and ignore the exception
