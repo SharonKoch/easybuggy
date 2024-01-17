@@ -19,8 +19,6 @@
  import org.apache.commons.lang.StringUtils;
  import org.t246osslab.easybuggy.core.servlets.AbstractServlet;
  import org.t246osslab.easybuggy.core.utils.MultiPartFileUtils;
-@@ -19,0 +19,1 @@
-+import java.nio.file.FileSystems;
  
  @SuppressWarnings("serial")
  @WebServlet(urlPatterns = { "/ureupload" })
@@ -133,28 +131,16 @@
                      // replace RGB value with avg
                      p = (a << 24) | (avg << 16) | (avg << 8) | avg;
  
-@@ -131,0 +132,1 @@
-+
                      image.setRGB(x, y, p);
                  }
              }
              // Output the image
-@@ -135,1 +137,6 @@
--            ImageIO.write(image, "png", new File(fileName));
-+            Path normalizedPath = FileSystems.getDefault().getPath(fileName).normalize();
-+            if (!normalizedPath.startsWith(new File(".").getCanonicalFile().toPath())) {
-+                IOException ioException = new IOException("Invalid file name.");
-+                throw new UncheckedIOException(ioException);
-+            }
-+            ImageIO.write(image, "png", new File(normalizedPath.toString()));
+             ImageIO.write(image, "png", new File(fileName));
              isConverted = true;
          } catch (Exception e) {
              // Log and ignore the exception
              log.warn("Exception occurs: ", e);
          }
-@@ -141,0 +148,2 @@
-+
-+
          return isConverted;
      }
  }
