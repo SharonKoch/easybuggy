@@ -133,11 +133,11 @@
                      if (StringUtils.isBlank(fileName)) {
                          // not attachment part, continue
                          continue;
-                     }
+@@ -131,1 +132,0 @@
+-                    }
  
-                     File saveFile = new File(fileName);
-@@ -134,0 +135,9 @@
-+
+@@ -133,1 +133,8 @@
+-                    File saveFile = new File(fileName);
 +                    // TODO - Introduce BASE_DIRECTORY path
 +                    // final String BASE_DIRECTORY = 
 +                    // Path normalizedPath = FileSystems.getDefault().getPath(BASE_DIRECTORY, fileName).normalize();
@@ -156,10 +156,10 @@
                          while ((bytesRead = inputStream.read(buffer)) != -1) {
                              outputStream.write(buffer, 0, bytesRead);
                          }
-@@ -144,0 +154,1 @@
-+
                      } catch (Exception e) {
                          log.error("Exception occurs: ", e);
+@@ -146,0 +153,1 @@
++
                      } finally {
                          Closer.close(outputStream);
                          Closer.close(inputStream);
