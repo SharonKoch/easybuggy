@@ -20,7 +20,7 @@
  import org.t246osslab.easybuggy.core.servlets.AbstractServlet;
  import org.t246osslab.easybuggy.core.utils.Closer;
 @@ -19,0 +19,1 @@
-+import java.nio.file.Path;
++import java.nio.file.FileSystems;
  
  @SuppressWarnings("serial")
  @WebServlet("/nullbyteijct")
@@ -42,37 +42,42 @@
                  responseToClient(req, res, getMsg("title.nullbyteinjection.page", locale), bodyHtml.toString());
                  return;
              } else {
+@@ -40,0 +41,1 @@
++
                  fileName = fileName + ".pdf";
              }
  
-@@ -43,0 +44,1 @@
-+
-             // Get absolute path of the web application
-             String appPath = getServletContext().getRealPath("");
+@@ -43,2 +45,16 @@
+-            // Get absolute path of the web application
+-            String appPath = getServletContext().getRealPath("");
++            // TODO - Introduce BASE_DIRECTORY path
++            // final String BASE_DIRECTORY = 
++            // Path normalizedPath = FileSystems.getDefault().getPath(BASE_DIRECTORY, fileName).normalize();
++            // if (!normalizedPath.startsWith(BASE_DIRECTORY)) {
++            //     IOException ioException = new IOException("Invalid file name.");
++            //      throw new UncheckedIOException(ioException);
++            // }
++            // File file = normalizedPath.toFile();
++            // if (!file.exists()) {
++            //     responseToClient(req, res, getMsg("title.nullbyteinjection.page", locale), bodyHtml.toString());
++            //     return;
++            // }
++            // log.debug("File location on server::" + file.getAbsolutePath());
++            // ServletContext ctx = getServletContext();
++            // fis = new FileInputStream(file);
++            // String mimeType = ctx.getMimeType(file.getAbsolutePath());
  
-@@ -46,2 +48,8 @@
+@@ -46,9 +62,1 @@
 -            File file = new File(appPath + File.separator + "pdf" + File.separator + fileName);
 -            if (!file.exists()) {
-+            Path path = null;
-+            try {
-+                path = Paths.get(appPath, "pdf", fileName);
-+            } catch (InvalidPathException e) {
-+                responseToClient(req, res, getMsg("msg.invalid.path.exception.occur", locale), "");
-+                return;
-+            }
-+            if (!Files.exists(path)) {
-                 responseToClient(req, res, getMsg("title.nullbyteinjection.page", locale), bodyHtml.toString());
-                 return;
-             }
-@@ -51,1 +59,1 @@
+-                responseToClient(req, res, getMsg("title.nullbyteinjection.page", locale), bodyHtml.toString());
+-                return;
+-            }
 -            log.debug("File location on server::" + file.getAbsolutePath());
-+            log.debug("File location on server::" + path.toAbsolutePath().toString());
-             ServletContext ctx = getServletContext();
-@@ -53,0 +61,2 @@
+-            ServletContext ctx = getServletContext();
+-            fis = new FileInputStream(file);
+-            String mimeType = ctx.getMimeType(file.getAbsolutePath());
 +
-+
-             fis = new FileInputStream(file);
-             String mimeType = ctx.getMimeType(file.getAbsolutePath());
              res.setContentType(mimeType != null ? mimeType : "application/octet-stream");
              res.setContentLength((int) file.length());
              res.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
