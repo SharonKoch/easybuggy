@@ -84,15 +84,7 @@
                  return;
              }
              boolean isConverted = MultiPartFileUtils.writeFile(filePart, savePath, fileName);
-@@ -81,1 +83,7 @@
--
-+      String fullPath = savePath + File.separator + fileName;
-+      File file = new File(fullPath);
-+      String normalizedPath = file.getCanonicalPath();
-+      if (!normalizedPath.startsWith(new File(savePath).getCanonicalPath())) {
-+        throw new SecurityException("Attempt to write file outside of the save directory.");
-+      }
-+
+ 
              // Reverse the color of the upload image
              if (!isConverted) {
                  isConverted = reverseColor(new File(savePath + File.separator + fileName).getAbsolutePath());
@@ -125,7 +117,16 @@
      private boolean reverseColor(String fileName) throws IOException {
          boolean isConverted = false;
          try {
-             BufferedImage image = ImageIO.read(new File(fileName));
+@@ -114,1 +116,8 @@
+-            BufferedImage image = ImageIO.read(new File(fileName));
++      String fullPath = savePath + File.separator + fileName;
++      File imageFile = new File(fullPath);
++      String normalizedPath = imageFile.getCanonicalPath();
++      if (!normalizedPath.startsWith(new File(savePath).getCanonicalPath())) {
++        throw new SecurityException("Attempt to read file outside of the save directory.");
++      }
++      BufferedImage image = ImageIO.read(imageFile);
++
              WritableRaster raster = image.getRaster();
              int[] pixelBuffer = new int[raster.getNumDataElements()];
              for (int y = 0; y < raster.getHeight(); y++) {
